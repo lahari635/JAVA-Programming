@@ -1,0 +1,107 @@
+
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+
+        int[] sizes = {1000, 10000, 50000};
+
+        for (int n : sizes) {
+
+            ArrayList<Integer> al = new ArrayList<>();
+            LinkedList<Integer> ll = new LinkedList<>();
+
+            for (int i = 0; i < n; i++) {
+                al.add(i);
+                ll.add(i);
+            }
+
+            System.out.println("\nList Size: " + n);
+
+            // Add at end
+            long start = System.nanoTime();
+            al.add(n);
+            long end = System.nanoTime();
+            System.out.println("ArrayList Add: " + (end - start));
+
+            start = System.nanoTime();
+            ll.add(n);
+            end = System.nanoTime();
+            System.out.println("LinkedList Add: " + (end - start));
+
+            // Insert at front
+            start = System.nanoTime();
+            al.add(0, 100);
+            end = System.nanoTime();
+            System.out.println("ArrayList Front Insert: " + (end - start));
+
+            start = System.nanoTime();
+            ll.add(0, 100);
+            end = System.nanoTime();
+            System.out.println("LinkedList Front Insert: " + (end - start));
+
+            // Insert in middle
+            int mid = n / 2;
+
+            start = System.nanoTime();
+            al.add(mid, 200);
+            end = System.nanoTime();
+            System.out.println("ArrayList Middle Insert: " + (end - start));
+
+            start = System.nanoTime();
+            ll.add(mid, 200);
+            end = System.nanoTime();
+            System.out.println("LinkedList Middle Insert: " + (end - start));
+
+            // Access kth element
+            start = System.nanoTime();
+            int a = al.get(mid);
+            end = System.nanoTime();
+            System.out.println("ArrayList Access: " + (end - start));
+
+            start = System.nanoTime();
+            int b = ll.get(mid);
+            end = System.nanoTime();
+            System.out.println("LinkedList Access: " + (end - start));
+
+            // Remove from front
+            start = System.nanoTime();
+            al.remove(0);
+            end = System.nanoTime();
+            System.out.println("ArrayList Front Remove: " + (end - start));
+
+            start = System.nanoTime();
+            ll.remove(0);
+            end = System.nanoTime();
+            System.out.println("LinkedList Front Remove: " + (end - start));
+
+            // Iteration
+            start = System.nanoTime();
+            for (int x : al) {
+                int temp = x;
+            }
+            end = System.nanoTime();
+            System.out.println("ArrayList Iteration: " + (end - start));
+
+            start = System.nanoTime();
+            for (int x : ll) {
+                int temp = x;
+            }
+            end = System.nanoTime();
+            System.out.println("LinkedList Iteration: " + (end - start));
+        }
+
+        // Up Next Queue using ArrayDeque
+        ArrayDeque<Integer> queue = new ArrayDeque<>();
+
+        queue.addLast(10);
+        queue.addLast(20);
+        queue.addFirst(5);
+
+        System.out.println("\nUp Next Queue: " + queue);
+
+        queue.removeFirst();
+
+        System.out.println("After Removing First Song: " + queue);
+    }
+}
