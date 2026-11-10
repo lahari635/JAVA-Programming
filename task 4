@@ -1,0 +1,65 @@
+
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+
+        HashMap<Integer, String> hm = new HashMap<>();
+        TreeMap<Integer, String> tm = new TreeMap<>();
+        LinkedHashMap<Integer, String> lhm = new LinkedHashMap<>();
+
+        // Adding medicines
+        hm.put(103, "Paracetamol");
+        hm.put(101, "Dolo");
+        hm.put(104, "Cetirizine");
+        hm.put(102, "Amoxicillin");
+
+        tm.putAll(hm);
+        lhm.putAll(hm);
+
+        // Display HashMap
+        System.out.println("HashMap: " + hm);
+
+        // Display TreeMap
+        System.out.println("TreeMap: " + tm);
+
+        // Display LinkedHashMap
+        System.out.println("LinkedHashMap: " + lhm);
+
+        // Searching medicine
+        System.out.println("Medicine with code 101: "
+                + hm.get(101));
+
+        // Checking medicine
+        System.out.println("Contains code 103: "
+                + hm.containsKey(103));
+
+        // Iteration
+        System.out.println("Medicine List:");
+
+        for (Map.Entry<Integer, String> entry : tm.entrySet()) {
+            System.out.println(entry.getKey() + " - "
+                    + entry.getValue());
+        }
+
+        // Performance test
+        int n = 100000;
+
+        HashMap<Integer, Integer> map = new HashMap<>();
+
+        for (int i = 0; i < n; i++) {
+            map.put(i, i);
+        }
+
+        long start = System.nanoTime();
+
+        for (int i = 0; i < n; i++) {
+            map.get(i);
+        }
+
+        long end = System.nanoTime();
+
+        System.out.println("100000 Lookups Time: "
+                + (end - start) + " ns");
+    }
+}
