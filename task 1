@@ -1,0 +1,38 @@
+import java.util.Scanner;
+import java.io.FileNotFoundException;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        try {
+            System.out.print("Enter Account Number: ");
+            int acc = sc.nextInt();
+
+            System.out.print("Enter Balance: ");
+            double balance = sc.nextDouble();
+
+            System.out.print("Enter Withdrawal Amount: ");
+            double amount = sc.nextDouble();
+
+            if (amount < 0)
+                throw new IllegalArgumentException("Negative amount");
+
+            if (amount > balance)
+                throw new ArithmeticException("Insufficient balance");
+
+            System.out.println("Withdrawal Successful");
+            System.out.println("Remaining Balance: " + (balance - amount));
+
+        } catch (java.util.InputMismatchException e) {
+            System.out.println("Invalid Input");
+
+        } catch (IllegalArgumentException | ArithmeticException e) {
+            System.out.println(e.getMessage());
+
+        } finally {
+            System.out.println("ATM Transaction Completed");
+            sc.close();
+        }
+    }
+}
