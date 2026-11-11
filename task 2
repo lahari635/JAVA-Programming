@@ -1,0 +1,110 @@
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
+public class AppointmentDesk extends JFrame {
+
+    JTextField patientId = new JTextField(15);
+
+    JComboBox<String> department = new JComboBox<>(
+        new String[]{"Cardiology", "Neurology", "Orthopedics"}
+    );
+
+    JComboBox<String> doctor = new JComboBox<>();
+
+    JComboBox<String> time = new JComboBox<>(
+        new String[]{"10 AM", "11 AM", "12 PM", "2 PM"}
+    );
+
+    JButton book = new JButton("Book Appointment");
+
+    boolean booking = false;
+
+    AppointmentDesk() {
+
+        setTitle("Hospital Appointment Desk");
+        setLayout(new GridLayout(5, 2, 10, 10));
+
+        add(new JLabel("Patient ID"));
+        add(patientId);
+
+        add(new JLabel("Department"));
+        add(department);
+
+        add(new JLabel("Doctor"));
+        add(doctor);
+
+        add(new JLabel("Time Slot"));
+        add(time);
+
+        add(book);
+
+        department.addActionListener(e -> updateDoctors());
+
+        book.addActionListener(e -> bookAppointment());
+
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                if (booking) {
+                    int choice = JOptionPane.showConfirmDialog(
+                        AppointmentDesk.this,
+                        "Booking in progress. Close window?"
+                    );
+
+                    if (choice == JOptionPane.YES_OPTION) {
+                        dispose();
+                    }
+                } else {
+                    dispose();
+                }
+            }
+        });
+
+        updateDoctors();
+
+        setSize(400, 300);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        setVisible(true);
+    }
+
+    void updateDoctors() {
+
+        doctor.removeAllItems();
+
+        String dept = (String) department.getSelectedItem();
+
+        if (dept.equals("Cardiology")) {
+            doctor.addItem("Dr. Ravi");
+            doctor.addItem("Dr. Kumar");
+        } else if (dept.equals("Neurology")) {
+            doctor.addItem("Dr. Priya");
+            doctor.addItem("Dr. Arun");
+        } else {
+            doctor.addItem("Dr. Suresh");
+            doctor.addItem("Dr. Ramesh");
+        }
+    }
+
+    void bookAppointment() {
+
+        String id = patientId.getText();
+
+        if (id.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Enter Patient ID");
+            return;
+        }
+
+        booking = true;
+
+        JOptionPane.showMessageDialog(
+            this,
+            "Appointment Booked Successfully"
+        );
+
+        booking = false;
+    }
+
+    public static void main(String[] args) {
+        new AppointmentDesk();
+    }
+}
