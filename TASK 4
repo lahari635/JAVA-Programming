@@ -1,0 +1,49 @@
+class ScannerStation extends Thread {
+
+    private int scripts;
+
+    ScannerStation(String name, int scripts) {
+        super(name);
+        this.scripts = scripts;
+    }
+
+    public void run() {
+        try {
+            System.out.println(getName() + " started");
+
+            Thread.sleep(1000);
+
+            System.out.println(
+                getName() + " scanned " + scripts + " scripts"
+            );
+
+        } catch (InterruptedException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}
+
+public class ScannerDemo {
+    public static void main(String[] args)
+            throws InterruptedException {
+
+        ScannerStation t1 = new ScannerStation("Station 1", 10);
+        ScannerStation t2 = new ScannerStation("Station 2", 20);
+        ScannerStation t3 = new ScannerStation("Station 3", 30);
+        ScannerStation t4 = new ScannerStation("Station 4", 40);
+
+        t1.start();
+        t2.start();
+        t3.start();
+        t4.start();
+
+        System.out.println("Station 1 alive: " + t1.isAlive());
+
+        t1.join();
+        t2.join();
+        t3.join();
+        t4.join();
+
+        System.out.println("All stations completed");
+    }
+}
