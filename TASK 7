@@ -1,0 +1,79 @@
+import java.io.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
+
+public class ResultProcessor {
+
+    static AtomicInteger success = new AtomicInteger();
+    static AtomicInteger failure = new AtomicInteger();
+
+    static class ProcessFile implements Callable<String> {
+
+        private String fileName;
+
+        ProcessFile(String fileName) {
+            this.fileName = fileName;
+        }
+
+        public String call() {
+
+            try {
+                File file = new File(fileName);
+
+                if (!file.exists()) {
+                    throw new FileNotFoundException("File not found");
+                }
+
+                BufferedReader br = new BufferedReader(
+                    new FileReader(file)
+                );
+
+                String data = br.readLine();
+                br.close();
+
+                if (data == null) {
+                    throw new IOException("Empty file");
+                }
+
+                success.incrementAndGet();
+
+                return fileName + " processed successfully";
+
+            } catch (Exception e) {
+                failure.incrementAndGet();
+
+                return fileName + " failed: " + e.getMessage();
+            }
+        }
+    }
+
+    public static void main(String[] args)
+            throws InterruptedException {
+
+        ExecutorService executor =
+            Executors.newFixedThreadPool(4);
+
+        for (int i = 1; i <= 10; i++) {
+
+            Future<String> future = executor.submit(
+                new ProcessFile("student" + i + ".txt")
+            );
+
+            try {
+                System.out.println(future.get());
+
+            } catch (ExecutionException e) {
+                System.out.println("Processing error");
+            }
+        }
+
+        executor.shutdown();
+
+        executor.awaitTermination(
+            1, TimeUnit.MINUTES
+        );
+
+        System.out.println("Successful files: " + success);
+        System.out.println("Failed files: " + failure);
+    }
+}
