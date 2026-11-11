@@ -1,0 +1,31 @@
+import java.io.*;
+
+public class SalesReport {
+    public static void main(String[] args) {
+
+        try (
+            BufferedReader br = new BufferedReader(
+                new FileReader("sales.txt")
+            );
+
+            BufferedWriter bw = new BufferedWriter(
+                new FileWriter("report.txt")
+            )
+        ) {
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                bw.write(line);
+                bw.newLine();
+            }
+
+            System.out.println("Report generated successfully");
+
+        } catch (IOException e) {
+            System.out.println("Error: " + e.getMessage());
+
+        } finally {
+            System.out.println("Report processing completed");
+        }
+    }
+}
