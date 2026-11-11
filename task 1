@@ -1,0 +1,76 @@
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
+class FeeService {
+
+    public void pay(String regNo, String amount) {
+        try {
+            if (regNo.isEmpty() || amount.isEmpty()) {
+                throw new IllegalArgumentException("Enter all details");
+            }
+
+            double a = Double.parseDouble(amount);
+
+            if (a <= 0) {
+                throw new IllegalArgumentException("Invalid amount");
+            }
+
+            JOptionPane.showMessageDialog(null, "Payment Successful");
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Enter valid amount");
+
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+    }
+}
+
+public class FeeWindow extends JFrame {
+
+    JTextField regNo = new JTextField(15);
+    JTextField amount = new JTextField(15);
+
+    JButton pay = new JButton("Pay");
+    JButton clear = new JButton("Clear");
+    JButton receipt = new JButton("Receipt");
+
+    FeeService service = new FeeService();
+
+    FeeWindow() {
+        setTitle("Student Fee Payment");
+        setLayout(new FlowLayout());
+
+        add(new JLabel("Register Number"));
+        add(regNo);
+
+        add(new JLabel("Amount"));
+        add(amount);
+
+        add(pay);
+        add(clear);
+        add(receipt);
+
+        pay.addActionListener(e ->
+            service.pay(regNo.getText(), amount.getText())
+        );
+
+        clear.addActionListener(e -> {
+            regNo.setText("");
+            amount.setText("");
+        });
+
+        receipt.addActionListener(e ->
+            JOptionPane.showMessageDialog(this, "Payment Receipt")
+        );
+
+        setSize(350, 250);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        new FeeWindow();
+    }
+}
