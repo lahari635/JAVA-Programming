@@ -1,0 +1,54 @@
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
+public class LibrarySearch extends JFrame {
+
+    JTextField search = new JTextField(15);
+
+    JComboBox<String> category = new JComboBox<>(
+        new String[]{"Books", "Journals", "Magazines"}
+    );
+
+    JTextArea results = new JTextArea();
+
+    JLabel status = new JLabel("Ready");
+
+    LibrarySearch() {
+
+        setTitle("Campus Library Search");
+
+        setLayout(new BorderLayout(5, 5));
+
+        JPanel top = new JPanel(new FlowLayout());
+
+        top.add(new JLabel("Search"));
+        top.add(search);
+        top.add(category);
+        top.add(new JButton("Search"));
+
+        add(top, BorderLayout.NORTH);
+
+        results.setText("Search results will appear here");
+
+        add(new JScrollPane(results), BorderLayout.CENTER);
+
+        JPanel bottom = new JPanel(new FlowLayout());
+
+        bottom.add(new JButton("Prev"));
+        bottom.add(new JButton("Next"));
+        bottom.add(new JButton("Reserve"));
+
+        add(bottom, BorderLayout.SOUTH);
+
+        add(status, BorderLayout.PAGE_END);
+
+        setSize(500, 400);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        new LibrarySearch();
+    }
+}
