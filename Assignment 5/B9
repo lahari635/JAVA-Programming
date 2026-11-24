@@ -1,0 +1,80 @@
+
+import java.io.*;
+import java.sql.*;
+
+public class PassMigration {
+
+    public static void main(String[] args) {
+
+        String file = "passes.csv";
+
+        String url = "jdbc:mysql://localhost:3306/assignment5";
+        String user = "root";
+        String password = "your_mysql_password";
+
+        String sql = "INSERT INTO bus_pass VALUES (?, ?, ?, ?, ?)";
+
+        int success = 0;
+        int failed = 0;
+
+        try (Connection con =
+                     DriverManager.getConnection(url, user, password);
+             BufferedReader br = new BufferedReader(
+                     new FileReader(file));
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            con.setAutoCommit(false);
+
+            String line;
+
+            while ((line = br.readLine()) != null) {
+
+                String[] p = line.split(",", -1);
+
+                try {
+                    if (p.length != 5)
+                        throw new IllegalArgumentException(
+                                "Invalid field count");
+
+                    int route = Integer.parseInt(p[3]);
+                    double amount = Double.parseDouble(p[4]);
+
+                    if (amount < 0)
+                        throw new IllegalArgumentException(
+                                "Negative amount");
+
+                    ps.setString(1, p[0]);
+                    ps.setString(2, p[1]);
+                    ps.setString(3, p[2]);
+                    ps.setInt(4, route);
+                    ps.setDouble(5, amount);
+
+                    ps.addBatch();
+                    success++;
+
+                    if (success % 1000 == 0) {
+                        ps.executeBatch();
+                        ps.clearBatch();
+                    }
+
+                } catch (Exception e) {
+                    failed++;
+                    System.out.println("Rejected: " + line +
+                            " | Reason: " + e.getMessage());
+                }
+            }
+
+            ps.executeBatch();
+            ps.clearBatch();
+
+            con.commit();
+
+            System.out.println("\nMigration Completed");
+            System.out.println("Valid records: " + success);
+            System.out.println("Failed records: " + failed);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
