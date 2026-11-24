@@ -1,0 +1,115 @@
+
+import java.sql.*;
+
+public class InsertComparison {
+
+    static final String URL =
+            "jdbc:mysql://localhost:3306/assignment5";
+    static final String USER = "root";
+    static final String PASSWORD = "your_mysql_password";
+
+    static void clear(Connection con) throws SQLException {
+        try (Statement st = con.createStatement()) {
+            st.executeUpdate("DELETE FROM bus_pass");
+        }
+    }
+
+    static void statementInsert(Connection con, int n)
+            throws SQLException {
+
+        clear(con);
+
+        long start = System.nanoTime();
+
+        try (Statement st = con.createStatement()) {
+            for (int i = 1; i <= n; i++) {
+                String sql = "INSERT INTO bus_pass VALUES (" +
+                        "'S" + i + "', 'R" + i +
+                        "', 'Student" + i + "', 10, 4500)";
+                st.executeUpdate(sql);
+            }
+        }
+
+        System.out.println("Statement: " +
+                (System.nanoTime() - start) / 1_000_000.0 + " ms");
+    }
+
+    static void preparedInsert(Connection con, int n)
+            throws SQLException {
+
+        clear(con);
+
+        String sql = "INSERT INTO bus_pass VALUES (?, ?, ?, ?, ?)";
+
+        long start = System.nanoTime();
+
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+
+            for (int i = 1; i <= n; i++) {
+                ps.setString(1, "P" + i);
+                ps.setString(2, "R" + i);
+                ps.setString(3, "Student" + i);
+                ps.setInt(4, 10);
+                ps.setDouble(5, 4500);
+                ps.executeUpdate();
+            }
+        }
+
+        System.out.println("PreparedStatement: " +
+                (System.nanoTime() - start) / 1_000_000.0 + " ms");
+    }
+
+    static void batchInsert(Connection con, int n)
+            throws SQLException {
+
+        clear(con);
+
+        String sql = "INSERT INTO bus_pass VALUES (?, ?, ?, ?, ?)";
+
+        long start = System.nanoTime();
+
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+
+            con.setAutoCommit(false);
+
+            for (int i = 1; i <= n; i++) {
+                ps.setString(1, "B" + i);
+                ps.setString(2, "R" + i);
+                ps.setString(3, "Student" + i);
+                ps.setInt(4, 10);
+                ps.setDouble(5, 4500);
+
+                ps.addBatch();
+
+                if (i % 1000 == 0) {
+                    ps.executeBatch();
+                    ps.clearBatch();
+                }
+            }
+
+            ps.executeBatch();
+            ps.clearBatch();
+
+            con.commit();
+            con.setAutoCommit(true);
+        }
+
+        System.out.println("Batch: " +
+                (System.nanoTime() - start) / 1_000_000.0 + " ms");
+    }
+
+    public static void main(String[] args) throws Exception {
+
+        try (Connection con =
+                     DriverManager.getConnection(URL, USER, PASSWORD)) {
+
+            for (int n : new int[]{1000, 10000, 100000}) {
+                System.out.println("\nRecords: " + n);
+
+                statementInsert(con, n);
+                preparedInsert(con, n);
+                batchInsert(con, n);
+            }
+        }
+    }
+}
