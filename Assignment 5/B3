@@ -1,0 +1,19 @@
+
+CREATE DATABASE assignment5;
+
+USE assignment5;
+
+CREATE TABLE bus_pass (
+    pass_id VARCHAR(20) PRIMARY KEY,
+    reg_no VARCHAR(20),
+    name VARCHAR(100),
+    route_no INT,
+    amount DOUBLE
+);
+
+CREATE TABLE users (
+    id VARCHAR(50) PRIMARY KEY,
+    pwd VARCHAR(100)
+);
+
+INSERT INTO users VALUES ('admin', 'admin123');
