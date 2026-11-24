@@ -1,0 +1,51 @@
+
+import java.io.*;
+
+public class LineCounter {
+
+    public static long countUnbuffered(String file) throws IOException {
+        long lines = 0;
+        try (FileInputStream fis = new FileInputStream(file)) {
+            int ch;
+            while ((ch = fis.read()) != -1) {
+                if (ch == '\n')
+                    lines++;
+            }
+        }
+        return lines;
+    }
+
+    public static long countBuffered(String file) throws IOException {
+        long lines = 0;
+        try (BufferedInputStream bis =
+                     new BufferedInputStream(new FileInputStream(file))) {
+            int ch;
+            while ((ch = bis.read()) != -1) {
+                if (ch == '\n')
+                    lines++;
+            }
+        }
+        return lines;
+    }
+
+    public static void main(String[] args) throws IOException {
+        String file = "attendance.txt";
+
+        long start = System.nanoTime();
+        long a = countUnbuffered(file);
+        long unbufferedTime = System.nanoTime() - start;
+
+        start = System.nanoTime();
+        long b = countBuffered(file);
+        long bufferedTime = System.nanoTime() - start;
+
+        System.out.println("Unbuffered lines: " + a);
+        System.out.println("Buffered lines: " + b);
+
+        System.out.println("Unbuffered time: " +
+                unbufferedTime / 1_000_000.0 + " ms");
+
+        System.out.println("Buffered time: " +
+                bufferedTime / 1_000_000.0 + " ms");
+    }
+}
